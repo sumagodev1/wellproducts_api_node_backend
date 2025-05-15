@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 
-app.use("/uploads", express.static("uploads"));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const sequelize = require("./config/database");
 const authRoutes = require("./routes/authRoutes");
@@ -70,6 +70,18 @@ const projectDetailsRoutes = require('./routes/projectDetailsRoutes');
 const projectDetailsWithImagesRoutes = require('./routes/projectDetailsWithImagesRoutes')
 const galleryDetailsRoutes = require('./routes/galleryDetailsRoutes');
 const galleryImagesRoutes = require('./routes/galleryImagesRoutes')
+
+const facilitiesRoutes = require('./routes/facilitiesRoutes');
+const homepagebannerRoutes = require('./routes/homepagebannerRoutes');
+const socialMediaRoutes = require('./routes/socialMediaRoutes');
+const contactInformationRoutes = require('./routes/contactInformationRoutes');
+const jobPostRoutes = require('./routes/jobPostRoutes');
+const contactUsRoutes = require('./routes/contactUsRoutes');
+const ourTeamRoutes = require('./routes/ourTeamRoutes');
+const productRoutes = require('./routes/productRoutes');
+// const productDetailRoutes = require('./routes/productDetailRoutes')
+
+
 app.use("/uploads", express.static("uploads"));
 
 app.use('/about', about);
@@ -79,8 +91,17 @@ app.use('/news', newsRoutes);
 app.use('/events', eventRoutes);
 app.use('/OueleadersRoutes', OueleadersRoutes);
 app.use('/blogdetails', blogDetailRoutes);
+app.use('/facilities', facilitiesRoutes);
+app.use('/homepagebanner',homepagebannerRoutes);
+app.use('/socialmedia',socialMediaRoutes);
+app.use('/contactinformation',contactInformationRoutes);
+app.use('/product',productRoutes);
+// app.use('/productdeatil',productDetailRoutes);
 app.use('/productdetails', productDetailsRoutes);
+app.use('./ourteam',ourTeamRoutes);
 app.use('/productname', productNameRoutes);
+app.use('/jobpost',jobPostRoutes);
+app.use('/contactus',contactUsRoutes);
 app.use('/getintouch', getInTouchRoutes);
 app.use('/subscribe', subscribeRoutes);
 app.use('/requestcallbackform', requestCallbackFormRoutes);

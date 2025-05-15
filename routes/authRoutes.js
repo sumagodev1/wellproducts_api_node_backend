@@ -6,7 +6,7 @@ const { validateChangePassword } = require('../validations/changePasswordValidat
 
 const router = express.Router();
 
-router.post('/verify-captcha', verifyCaptcha);
+// router.post('/verify-captcha', verifyCaptcha);
 router.post('/login', validateLogin, loginUser);
 router.put('/change-password', authenticateToken, validateChangePassword, changePassword);
 

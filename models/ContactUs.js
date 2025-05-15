@@ -1,22 +1,28 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const BlogDetail = sequelize.define('BlogDetail', {
-  img: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  title: {
+const ContactUs = sequelize.define('ContactUs', {
+  name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  shortDesc: {
+  email: {
     type: DataTypes.STRING,
     allowNull: false,
+    validate: {
+      isEmail: true,
+    },
   },
-  longDesc: {
+  message: {
     type: DataTypes.TEXT,
     allowNull: false,
+  },
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isNumeric: true,
+    },
   },
   isActive: {
     type: DataTypes.BOOLEAN,
@@ -30,4 +36,4 @@ const BlogDetail = sequelize.define('BlogDetail', {
   timestamps: true,
 });
 
-module.exports = BlogDetail;
+module.exports = ContactUs;

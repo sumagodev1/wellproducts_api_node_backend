@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const BlogDetail = sequelize.define('BlogDetail', {
+const Facilities = sequelize.define('Facilities', {
   img: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -14,10 +14,7 @@ const BlogDetail = sequelize.define('BlogDetail', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  longDesc: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
+
   isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
@@ -30,4 +27,4 @@ const BlogDetail = sequelize.define('BlogDetail', {
   timestamps: true,
 });
 
-module.exports = BlogDetail;
+module.exports = Facilities;

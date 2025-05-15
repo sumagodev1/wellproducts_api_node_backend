@@ -1,21 +1,9 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const BlogDetail = sequelize.define('BlogDetail', {
-  img: {
+const SocialMedia = sequelize.define('SocialMedia', {
+  medialinks: {
     type: DataTypes.STRING,
-    allowNull: true,
-  },
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  shortDesc: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  longDesc: {
-    type: DataTypes.TEXT,
     allowNull: false,
   },
   isActive: {
@@ -30,4 +18,4 @@ const BlogDetail = sequelize.define('BlogDetail', {
   timestamps: true,
 });
 
-module.exports = BlogDetail;
+module.exports = SocialMedia;

@@ -87,7 +87,9 @@ const verifyCaptcha = async (req, res) => {
           })
       );
 
-      console.log(response)
+      console.log("response",response)
+      console.log("Captcha Response: ", response.data);
+
       if (response.data.success) {
           return res.json({ success: true, message: "CAPTCHA verified" });
       } else {

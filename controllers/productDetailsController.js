@@ -42,14 +42,14 @@ const apiResponse = require('../helper/apiResponse');
 exports.addProductDetails = async (req, res) => {
   try {
     console.log(req.body); // Log the body to check the incoming data
-    const { productName, slug, application } = req.body;
-    const images = req.files ? req.files.map(file => file.path) : [];
+    const { productName, description} = req.body;
+    const img = req.files ? req.files.map(file => file.path) : [];
 
     // Create the product details entry
     const productDetails = await ProductDetails.create({
       productName,
-      slug,
-      application,
+      description,
+      img,
       isActive: true,
       isDelete: false,
     });
@@ -57,8 +57,8 @@ exports.addProductDetails = async (req, res) => {
     let createdImages = [];
 
     // Only create ProductImages if there are images to associate
-    if (images.length > 0) {
-      createdImages = await Promise.all(images.map(img => {
+    if (img.length > 0) {
+      createdImages = await Promise.all(img.map(img => {
         return ProductImages.create({ 
           img, 
           ProductDetailId: productDetails.id,
@@ -97,8 +97,8 @@ exports.getAllProductDetails = async (req, res) => {
     });
 
     productDetails.forEach(product => {
-      product.images.forEach(image => {
-        image.img = baseUrl + image.img;
+      product.img.forEach(img => {
+        img.img = baseUrl + img.img;
       });
     });
 
@@ -180,8 +180,8 @@ exports.getAllProductDetails = async (req, res) => {
 exports.updateProductDetails = async (req, res) => {
   try {
     const { productId } = req.params;
-    const { productName, application } = req.body;
-    const images = req.files ? req.files.map(file => file.path) : [];
+    const { productName,description } = req.body;
+    const img = req.files ? req.files.map(file => file.path) : [];
 
     // Find the product by primary key
     const productDetails = await ProductDetails.findByPk(productId);
@@ -191,19 +191,18 @@ exports.updateProductDetails = async (req, res) => {
 
     // Update product details
     productDetails.productName = productName || productDetails.productName;
-     productDetails.slug = productName || productDetails.slug;
-    productDetails.application = application || productDetails.application;
+    productDetails.description = description || productDetails.description;
     productDetails.isActive = req.body.isActive !== undefined ? req.body.isActive : productDetails.isActive;
     productDetails.isDelete = req.body.isDelete !== undefined ? req.body.isDelete : productDetails.isDelete;
     await productDetails.save();
 
     // Handle images only if they are provided
-    if (images.length > 0) {
+    if (img.length > 0) {
       // Find existing images
       const existingImages = await ProductImages.findAll({ where: { ProductDetailId: productId } });
 
       // Delete images that are not in the new list
-      const imagePaths = images.map(img => img.split('/').pop());
+      const imagePaths = img.map(img => img.split('/').pop());
       await ProductImages.destroy({
         where: {
           ProductDetailId: productId,
@@ -214,7 +213,7 @@ exports.updateProductDetails = async (req, res) => {
       });
 
       // Add or update images
-      await Promise.all(images.map(img => {
+      await Promise.all(img.map(img => {
         return ProductImages.upsert({
           img,
           ProductDetailId: productId // Set the foreign key

@@ -2,7 +2,7 @@ const { body, param } = require('express-validator');
 
 const validateProductDetails = [
   body('productName').notEmpty().withMessage('Product name is required'),
-  body('application').isJSON().withMessage('Application must be a JSON array'),
+   body('description').notEmpty().withMessage('Description name is required'),
 ];
 
 const validateProductDetailsId = [
