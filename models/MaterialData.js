@@ -2,7 +2,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const MaterialData = sequelize.define('MaterialData', {
+const MaterialData = sequelize.define('materialdata', {
   productId: {
     type: DataTypes.INTEGER,
     allowNull: false,

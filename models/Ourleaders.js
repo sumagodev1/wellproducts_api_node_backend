@@ -2,7 +2,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Oueleaders = sequelize.define('Oueleaders', {
+const Oueleaders = sequelize.define('oueleaders', {
   name: {
     type: DataTypes.STRING,
     allowNull: true,

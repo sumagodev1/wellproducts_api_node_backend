@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const RequestCallbackForm = sequelize.define('RequestCallbackForm', {
+const RequestCallbackForm = sequelize.define('requestcallbackform', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,

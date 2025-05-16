@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-const SocialContact = sequelize.define("SocialContact", {
+const SocialContact = sequelize.define("socialcontact", {
   instagram: {
     type: DataTypes.STRING,
     allowNull: true,

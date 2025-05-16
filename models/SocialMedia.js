@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const SocialMedia = sequelize.define('SocialMedia', {
+const SocialMedia = sequelize.define('socialmedia', {
   medialinks: {
     type: DataTypes.STRING,
     allowNull: false,

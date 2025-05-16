@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
 const Carrousal = sequelize.define(
-  "Carrousal",
+  "carrousal",
   {
     img: {
       type: DataTypes.STRING,

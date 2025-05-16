@@ -4,7 +4,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const ProductImages = require('./ProductImage'); // Import the ProductImages model
 
-const ProductDetails = sequelize.define('ProductDetails', {
+const ProductDetails = sequelize.define('productdetails', {
    img: {
     type: DataTypes.STRING,
     allowNull: true,

@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const ContactInformation= sequelize.define('ContactInformation', {
+const ContactInformation= sequelize.define('contactinformation', {
   phone: {
     type: DataTypes.STRING,
     allowNull: false,

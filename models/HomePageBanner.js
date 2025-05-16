@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const HomePageBanner = sequelize.define('HomePageBanner', {
+const HomePageBanner = sequelize.define('homepagebanner', {
   img: {
     type: DataTypes.STRING,
     allowNull: true,
