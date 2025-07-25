@@ -1,11 +1,9 @@
-// models/ProductDetails.js
-
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const ProductImages = require('./ProductImage'); // Import the ProductImages model
+const ProductImages = require('./ProductImage');
 
 const ProductDetails = sequelize.define('productdetails', {
-   img: {
+  img: {
     type: DataTypes.STRING,
     allowNull: true,
   },
@@ -18,9 +16,13 @@ const ProductDetails = sequelize.define('productdetails', {
     type: DataTypes.TEXT,
     allowNull: false,
   },
+  specs: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
   isActive: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: true,
   },
   isDelete: {
     type: DataTypes.BOOLEAN,
@@ -30,7 +32,6 @@ const ProductDetails = sequelize.define('productdetails', {
   timestamps: true,
 });
 
-// Define the association
 ProductDetails.hasMany(ProductImages, { as: 'images', foreignKey: 'ProductDetailId' });
 ProductImages.belongsTo(ProductDetails, { foreignKey: 'ProductDetailId' });
 

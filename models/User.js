@@ -12,7 +12,7 @@ const User = sequelize.define('userdb', {
     allowNull: false
   }
 }, {
+  
   timestamps: false
 });
-
 module.exports = User;

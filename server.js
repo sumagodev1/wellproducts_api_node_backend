@@ -106,7 +106,7 @@ app.use('/contactinformation',contactInformationRoutes);
 app.use('/product',productRoutes);
 // app.use('/productdeatil',productDetailRoutes);
 app.use('/productdetails', productDetailsRoutes);
-app.use('./ourteam',ourTeamRoutes);
+app.use('/ourteam',ourTeamRoutes);
 app.use('/productname', productNameRoutes);
 app.use('/jobpost',jobPostRoutes);
 app.use('/contactus',contactUsRoutes);
@@ -116,7 +116,7 @@ app.use('/requestcallbackform', requestCallbackFormRoutes);
 app.use('/carousal-form', carousalFormRoutes);
 app.use('/office', officeRoutes);
 app.use('/contactperson', contactPersonRoutes);
-app.use("/auth", authRoutes);
+app.use('/auth', authRoutes);
 app.use("/header-contact", headerContactRoutes);
 app.use("/social-contact", socialContactRoutes);
 app.use("/testimonials", testimonialRoutes);
@@ -176,4 +176,8 @@ init();
 
 app.get("/", (req, res) => {
   res.send("server start");
+});
+
+app.use((req, res) => {
+  res.status(404).send('404 - Resource not found');
 });
