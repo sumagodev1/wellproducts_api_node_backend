@@ -275,9 +275,8 @@ exports.getProduct = async (req, res) => {
         if (typeof data.images === 'string') {
           data.images = JSON.parse(data.images);
           // ✅ Map image paths with baseUrl
-          data.images = Array.isArray(data.images)
-            ? data.images.map(path => baseUrl + path.replace(/\\/g, '/'))
-            : [];
+          data.images = data.images.map(path => baseUrl + path.replace(/\\/g, '/'))
+            
         }
       } catch {
         data.images = [];
