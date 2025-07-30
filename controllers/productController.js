@@ -267,16 +267,26 @@ exports.getProduct = async (req, res) => {
     const baseUrl = `${process.env.SERVER_PATH}`;
     const productWithBaseUrl = products.map(product => {
       const data = product.toJSON();
+
       data.img = data.img ? baseUrl + data.img.replace(/\\/g, '/') : null;
 
-      // ✅ Fix here for multiple images
-      data.images = Array.isArray(data.images)
-        ? data.images.map(path => baseUrl + path.replace(/\\/g, '/'))
-        : [];
-           console.log("data",data);
-           
+      // ✅ Ensure images is a real array
+      try {
+        if (typeof data.images === 'string') {
+          data.images = JSON.parse(data.images);
+          // ✅ Map image paths with baseUrl
+          data.images = Array.isArray(data.images)
+            ? data.images.map(path => baseUrl + path.replace(/\\/g, '/'))
+            : [];
+        }
+      } catch {
+        data.images = [];
+      }
+      console.log("daata", data);
+      
       return data;
     });
+
 
     return apiResponse.successResponseWithData(
       res,
