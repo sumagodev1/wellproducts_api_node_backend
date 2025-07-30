@@ -5,6 +5,8 @@ const validateContactUs = [
   body('email').isEmail().withMessage('Email is required and must be a valid email'),
   body('message').notEmpty().withMessage('Message is required'),
   body('phone').isNumeric().withMessage('Phone must be a valid number'),
+  body('subject').notEmpty().withMessage('Subject is required'),
+
 ];
 
 const validateContactUsId = [

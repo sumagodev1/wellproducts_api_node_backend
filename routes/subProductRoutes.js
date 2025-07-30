@@ -1,22 +1,13 @@
+// routes/subProductRoutes.js
 const express = require('express');
-
-const {
-  addSubProduct,
-  getSubProductsByProduct,
-  updateSubProduct,
-  deleteSubProduct,
-  toggleActiveStatus,
-} = require('../controllers/subProductController');
-
-const authenticateToken = require('../middleware/auth');
+const router = express.Router();
+const subProductController = require('../controllers/subProductController');
 const { uploadFiles } = require('../middleware/fileUploadMiddleware');
 
-const router = express.Router();
-
-router.post('/create', authenticateToken, uploadFiles, addSubProduct);
-router.get('/by-product/:productId', authenticateToken, getSubProductsByProduct);
-router.put('/update/:id', authenticateToken, uploadFiles, updateSubProduct);
-router.delete('/delete/:id', authenticateToken, deleteSubProduct);
-router.put('/toggle-active/:id', authenticateToken, toggleActiveStatus);
+router.post('/create-subproduct', uploadFiles, subProductController.addSubProduct);
+router.get('/get-product/:productId', subProductController.getSubProductsByProduct);
+router.put('/update-product/:id',uploadFiles, subProductController.updateSubProduct);
+router.patch('/status-product/status/:id', subProductController.toggleSubProductStatus);
+router.delete('/delete-product/:id', subProductController.deleteSubProduct);
 
 module.exports = router;

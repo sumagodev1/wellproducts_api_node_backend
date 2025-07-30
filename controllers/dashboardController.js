@@ -3,19 +3,24 @@
 const Product = require('../models/Product');
 const News = require('../models/News');
 const BlogDetail = require('../models/BlogDetail');
-const Facilities =require('../models/Facilities');
+const Facilities = require('../models/Facilities');
 const JobPost = require('../models/JobPost');
 const apiResponse = require('../helper/apiResponse');
 
 exports.getDashboardStats = async (req, res) => {
   try {
-    const [productCount, newsCount, blogCount,facilitiesCount,jobpostCount] = await Promise.all([
-      Product.count(),
-      News.count(),
-      BlogDetail.count(),
-      Facilities.count(),
-      JobPost.count()
-
+    const [
+      productCount,
+      newsCount,
+      blogCount,
+      facilitiesCount,
+      jobpostCount
+    ] = await Promise.all([
+      Product.count({ where: { isDelete: false } }),
+      News.count({ where: { isDelete: false } }),
+      BlogDetail.count({ where: { isDelete: false } }),
+      Facilities.count({ where: { isDelete: false } }),
+      JobPost.count({ where: { isDelete: false } })
     ]);
 
     return apiResponse.successResponseWithData(res, "Dashboard stats fetched", {

@@ -1,3 +1,4 @@
+// models/SubProduct.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const Product = require('./Product');
@@ -7,12 +8,12 @@ const SubProduct = sequelize.define('subproduct', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  img: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   shortDesc: {
     type: DataTypes.STRING,
-    allowNull: false,
-  },
-  img: {
-    type: DataTypes.JSON, // Array of image paths
     allowNull: true,
   },
   isActive: {
@@ -23,11 +24,10 @@ const SubProduct = sequelize.define('subproduct', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-}, {
-  timestamps: true,
 });
 
+// Relation: One Product has many SubProducts
+Product.hasMany(SubProduct, { foreignKey: 'productId', onDelete: 'CASCADE' });
 SubProduct.belongsTo(Product, { foreignKey: 'productId' });
-Product.hasMany(SubProduct, { foreignKey: 'productId' });
 
 module.exports = SubProduct;

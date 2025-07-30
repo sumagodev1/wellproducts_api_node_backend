@@ -28,9 +28,15 @@ const upload = multer({
 });
 
 // Middleware to handle both image and PDF uploads
+// const uploadFiles = upload.fields([
+//   { name: 'img', maxCount: 10 },
+//   { name: 'pdf', maxCount: 1 }
+// ]);
+
 const uploadFiles = upload.fields([
-  { name: 'img', maxCount: 10 },
-  { name: 'pdf', maxCount: 1 }
+  { name: 'img', maxCount: 1 },
+  { name: 'images', maxCount: 10 }, // for multiple additional images
+  { name: 'pdf', maxCount: 1 },
 ]);
 
 module.exports = { uploadFiles };

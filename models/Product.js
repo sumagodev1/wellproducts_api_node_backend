@@ -8,6 +8,10 @@ const Product = sequelize.define('product', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+   images: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
   title: {
     type: DataTypes.STRING,
     allowNull: false,

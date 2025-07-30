@@ -6,33 +6,6 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 const axios = require("axios");
 
-// const loginUser = async (req, res) => {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     return apiResponse.validationErrorWithData(res, 'Validation Error', errors.array());
-//   }
-
-//   const { email, password } = req.body;
-//   try {
-//     const user = await User.findOne({ where: { email } });
-//     if (!user) {
-//       return apiResponse.notFoundResponse(res, 'User not found');
-//     }
-
-//     if (user.password !== password) {
-//       return apiResponse.unauthorizedResponse(res, 'Invalid credentials');
-//     }
-
-//     const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-//       expiresIn: '2h',
-//     });
-
-//     return apiResponse.successResponseWithData(res, 'Login successful', { token });
-//   } catch (error) {
-//     console.log("Login failed", error);
-//     return apiResponse.ErrorResponse(res, 'Login failed');
-//   }
-// };
 
 const loginUser = async (req, res) => {
   const errors = validationResult(req);
@@ -162,45 +135,8 @@ const changePassword = async (req, res) => {
 };
 
 
-// const changePassword = async (req, res) => {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     return apiResponse.validationErrorWithData(res, 'Validation Error', errors.array());
-//   }
 
-//   const { oldPassword, newPassword } = req.body;
-//   const userId = req.user.id; // Extracted from the token
 
-//   try {
-//     const user = await User.findByPk(userId);
-//     if (!user) {
-//       return apiResponse.notFoundResponse(res, 'User not found');
-//     }
-
-//     // Compare old password directly (no bcrypt needed)
-//     // if (user.password !== oldPassword) {
-//     //   return apiResponse.unauthorizedResponse(res, 'Old password is incorrect');
-//     // }
-
-//     if (user.password !== oldPassword) {
-//       return apiResponse.validationErrorWithData(res, 'Old password is incorrect');
-//     }    
-
-//     // Check if new password is different from old password
-//     if (oldPassword === newPassword) {
-//       return apiResponse.validationErrorWithData(res, 'New password cannot be the same as the old password');
-//     }
-
-//     // Update password
-//     user.password = newPassword;
-//     await user.save();
-
-//     return apiResponse.successResponse(res, 'Password changed successfully');
-//   } catch (error) {
-//     console.error('Password change failed:', error);
-//     return apiResponse.ErrorResponse(res, 'Password change failed');
-//   }
-// };
 
 
 module.exports = { loginUser, changePassword, getProfile ,verifyCaptcha};
