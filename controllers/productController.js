@@ -273,7 +273,8 @@ exports.getProduct = async (req, res) => {
       data.images = Array.isArray(data.images)
         ? data.images.map(path => baseUrl + path.replace(/\\/g, '/'))
         : [];
-
+           console.log("data",data);
+           
       return data;
     });
 
