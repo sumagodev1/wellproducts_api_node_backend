@@ -268,9 +268,12 @@ exports.getProduct = async (req, res) => {
     const productWithBaseUrl = products.map(product => {
       const data = product.toJSON();
       data.img = data.img ? baseUrl + data.img.replace(/\\/g, '/') : null;
+
+      // ✅ Fix here for multiple images
       data.images = Array.isArray(data.images)
         ? data.images.map(path => baseUrl + path.replace(/\\/g, '/'))
-        : null;
+        : [];
+
       return data;
     });
 
@@ -284,6 +287,7 @@ exports.getProduct = async (req, res) => {
     return apiResponse.ErrorResponse(res, 'Get product failed');
   }
 };
+
 
 // TOGGLE ACTIVE STATUS
 exports.isActiveStatus = async (req, res) => {
