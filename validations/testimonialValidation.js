@@ -3,7 +3,6 @@ const { body, param } = require('express-validator');
 const validateTestimonial = [
   body('name')
     .notEmpty().withMessage('Name is required')
-    .matches(/^[a-zA-Z0-9\s.-]+$/).withMessage('Name can only contain letters, numbers, spaces, dots, and hyphens')
 
     .custom(async (value) => {
       const existing = await db.Testimonial.findOne({ where: { name: value } });
