@@ -36,6 +36,11 @@ const JobPost = sequelize.define('jobpost', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  publishedDate: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
 }, {
   timestamps: true,
 });

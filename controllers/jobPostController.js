@@ -236,11 +236,11 @@ exports.addJobPost = async (req, res) => {
     return apiResponse.ErrorResponse(res, errors.array().map(err => err.msg).join(', '));
   }
   try {
-    const { jobtitle,description,education,experience,phone,email } = req.body;
+    const { jobtitle,description,education,experience,phone,email,publishedDate } = req.body;
 
 
     const jobpost = await JobPost.create({ 
-      jobtitle,description,education,experience,phone,email, 
+      jobtitle,description,education,experience,phone,email,publishedDate, 
       isActive: true, isDelete: false 
     });
     return apiResponse.successResponseWithData(res, 'job post added successfully', jobpost);
@@ -257,7 +257,7 @@ exports.updateJobPost = async (req, res) => {
   }
   try {
     const { id } = req.params;
-    const { jobtitle,description,education,experience,email,phone } = req.body;
+    const { jobtitle,description,education,experience,email,phone,publishedDate } = req.body;
 
     const jobpost = await JobPost.findByPk(id);
     if (!jobpost) {
@@ -270,6 +270,7 @@ exports.updateJobPost = async (req, res) => {
     jobpost.experience = experience;
     jobpost.phone = phone;
     jobpost.email = email;
+    jobpost.publishedDate = publishedDate;
     await jobpost.save();
 
     return apiResponse.successResponseWithData(res, 'Job post updated successfully', jobpost);

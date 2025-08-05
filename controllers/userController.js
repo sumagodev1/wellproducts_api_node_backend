@@ -75,7 +75,7 @@ exports.loginUser = async (req, res) => {
     const token = jwt.sign(
       { userId: user.id, email: user.email },
       process.env.JWT_SECRET || 'your_jwt_secret', // Use env variable ideally
-      { expiresIn: '1h' }
+      { expiresIn: '2h' }
     );
 
     // ✅ This response structure matches what your frontend expects

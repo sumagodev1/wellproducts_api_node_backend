@@ -3,9 +3,9 @@ const apiResponse = require('../helper/apiResponse');
 
 exports.addContactUs = async (req, res) => {
   try {
-    const { name, email, message, phone,subject } = req.body;
+    const { name, email, message, phone,subject,publishedDate } = req.body;
 
-    const contactus = await ContactUs.create({ name, email, message, phone,subject });
+    const contactus = await ContactUs.create({ name, email, message, phone,subject,publishedDate });
     return apiResponse.successResponseWithData(res, 'Contact Us data added successfully', contactus);
   } catch (error) {
     console.error('Add Contact us data failed', error);
@@ -26,7 +26,7 @@ exports.getContactUs = async (req, res) => {
 exports.updateContactUs = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, message, phone,subject } = req.body;
+    const { name, email, message, phone,subject,publishedDate } = req.body;
 
     const contactus = await ContactUs.findByPk(id);
     if (!contactus) {
@@ -38,6 +38,7 @@ exports.updateContactUs = async (req, res) => {
     contactus.message = message;
     contactus.phone = phone;
     contactus.subject = subject;
+    contactus.publishedDate = publishedDate;
     await contactus.save();
 
     return apiResponse.successResponseWithData(res, 'Contact us record updated successfully', contactus);
