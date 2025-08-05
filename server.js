@@ -86,6 +86,7 @@ const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
 const subProductRoutes = require('./routes/subProductRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const clientRoutes = require('./routes/clientRoutes');
 
 // const productDetailRoutes = require('./routes/productDetailRoutes')
 
@@ -140,6 +141,7 @@ app.use('/galleryDetails',galleryDetailsRoutes)
 app.use('/galleryImages',galleryImagesRoutes)
 app.use('/userdb',userRoutes);
 app.use('/subproduct',subProductRoutes);
+app.use('/client',clientRoutes);
 
 // Global Error Handling Middleware
 // app.use((err, req, res, next) => {

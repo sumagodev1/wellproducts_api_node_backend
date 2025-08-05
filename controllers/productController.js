@@ -293,13 +293,16 @@ exports.updateProduct = async (req, res) => {
 
     // Parse existing image paths from request body
     let retainedImages = [];
+
     if (existingImages) {
+      // If existingImages is a single string, wrap it in array
       if (Array.isArray(existingImages)) {
         retainedImages = existingImages;
       } else {
-        retainedImages = [existingImages]; // in case it's a single string
+        retainedImages = [existingImages];
       }
     }
+
 
     const updatedImages = [...retainedImages, ...newImagePaths];
 
@@ -340,13 +343,13 @@ exports.getProduct = async (req, res) => {
           data.images = JSON.parse(data.images);
           // ✅ Map image paths with baseUrl
           data.images = data.images.map(path => baseUrl + path.replace(/\\/g, '/'))
-            
+
         }
       } catch {
         data.images = [];
       }
       console.log("daata", data);
-      
+
       return data;
     });
 

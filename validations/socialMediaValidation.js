@@ -5,10 +5,10 @@ exports.validateSocialMedia = [
     .notEmpty()
     .withMessage('Social media link is required')
     .isURL({
-      protocols: ['http', 'https'],
+      protocols: ['http', 'https','www.'],
       require_protocol: true,
     })
-    .withMessage('Please provide a valid URL starting with http:// or https://')
+    .withMessage('Please provide a valid URL starting with http:// or https:// or www.')
 ];
 
 exports.validateSocialMediaId = [
