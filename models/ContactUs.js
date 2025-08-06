@@ -36,11 +36,7 @@ const ContactUs = sequelize.define('contactus', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-   publishedDate: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: DataTypes.NOW,
-  },
+   
 }, {
   timestamps: true,
 });

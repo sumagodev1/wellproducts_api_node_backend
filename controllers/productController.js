@@ -209,56 +209,6 @@ exports.addProduct = async (req, res) => {
 };
 
 // UPDATE PRODUCT
-// exports.updateProduct = async (req, res) => {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     return apiResponse.ErrorResponse(res, errors.array().map(err => err.msg).join(', '));
-//   }
-
-//   try {
-//     const { id } = req.params;
-//     const { title, shortDesc } = req.body;
-
-//     const mainImage = req.files['img'] ? req.files['img'][0].path : null;
-//     const extraImages = req.files['images'] || [];
-//     const imagePaths = extraImages.map(file => file.path);
-
-//     const product = await Product.findByPk(id);
-//     if (!product) {
-//       return apiResponse.notFoundResponse(res, 'Product not found');
-//     }
-
-//     // Check for duplicate title in other products
-//     const existingProduct = await Product.findOne({
-//       where: {
-//         title: title.trim(),
-//         isDelete: false,
-//         id: { [Op.ne]: id },
-//       },
-//     });
-
-//     if (existingProduct) {
-//       return apiResponse.ErrorResponse(res, 'Another product with this title already exists');
-//     }
-
-//     product.img = mainImage || product.img;
-//     product.images = imagePaths.length > 0 ? imagePaths : product.images;
-//     product.title = title.trim();
-//     product.shortDesc = shortDesc.trim();
-
-//     await product.save();
-
-//     return apiResponse.successResponseWithData(
-//       res,
-//       'Product updated successfully',
-//       product
-//     );
-//   } catch (error) {
-//     console.error('Update product failed', error);
-//     return apiResponse.ErrorResponse(res, 'Update product failed');
-//   }
-// };
-
 exports.updateProduct = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -321,9 +271,6 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-
-
-
 // GET PRODUCTS
 exports.getProduct = async (req, res) => {
   try {
@@ -351,7 +298,6 @@ exports.getProduct = async (req, res) => {
       return data;
     });
 
-
     return apiResponse.successResponseWithData(
       res,
       'Product retrieved successfully',
@@ -362,7 +308,6 @@ exports.getProduct = async (req, res) => {
     return apiResponse.ErrorResponse(res, 'Get product failed');
   }
 };
-
 
 // TOGGLE ACTIVE STATUS
 exports.isActiveStatus = async (req, res) => {

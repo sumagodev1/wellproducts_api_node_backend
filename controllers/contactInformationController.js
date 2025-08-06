@@ -8,11 +8,11 @@ exports.addContactInformation = async (req, res) => {
     return apiResponse.ErrorResponse(res, errors.array().map(err => err.msg).join(', '));
   }
   try {
-    const { phone, email, address } = req.body;
+    const { phone,phone1,link, email, address } = req.body;
 
 
     const contactinformation = await ContactInformation.create({ 
-      phone, email, address, 
+      phone,phone1,link, email, address, 
       isActive: true, isDelete: false 
     });
     return apiResponse.successResponseWithData(res, 'Contact information added successfully', contactinformation);
@@ -29,7 +29,7 @@ exports.updateContactInformation = async (req, res) => {
   }
   try {
     const { id } = req.params;
-    const { phone, email, address } = req.body;
+    const { phone,phone1,link, email, address } = req.body;
 
     const contactinformation = await ContactInformation.findByPk(id);
     if (!contactinformation) {
@@ -37,6 +37,8 @@ exports.updateContactInformation = async (req, res) => {
     }
 
     contactinformation.phone = phone;
+    contactinformation.phone1 = phone1;
+    contactinformation.link = link;
     contactinformation.email = email;
     contactinformation.address = address;
     await contactinformation.save();

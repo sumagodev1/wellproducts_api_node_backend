@@ -6,6 +6,14 @@ const ContactInformation= sequelize.define('contactinformation', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  phone1: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  link: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   email: {
     type: DataTypes.STRING,
     allowNull: false,

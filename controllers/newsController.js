@@ -1,11 +1,27 @@
+const { Op } = require("sequelize");
 const NewsEvent = require("../models/News");
 const apiResponse = require("../helper/apiResponse");
 
-// ✅ Create News
+// ✅ Create News with duplicate titleLine1 check
 exports.addNewsEvent = async (req, res) => {
   try {
     const { titleLine1, titleLine2, publishedDate } = req.body;
     const img = req.file ? req.file.path : null;
+
+    // Check for existing titleLine1 (case-sensitive)
+    const existingNews = await NewsEvent.findOne({
+      where: {
+        titleLine1: titleLine1.trim(),
+        isDelete: false,
+      },
+    });
+
+    if (existingNews) {
+      return apiResponse.validationErrorWithData(
+        res,
+        "A news item with this titleLine1 already exists"
+      );
+    }
 
     const news = await NewsEvent.create({
       img,
@@ -23,7 +39,7 @@ exports.addNewsEvent = async (req, res) => {
   }
 };
 
-// ✅ Update News
+// ✅ Update News with duplicate titleLine1 check
 exports.updateNewsEvent = async (req, res) => {
   try {
     const { id } = req.params;
@@ -33,6 +49,22 @@ exports.updateNewsEvent = async (req, res) => {
     const news = await NewsEvent.findByPk(id);
     if (!news) {
       return apiResponse.notFoundResponse(res, "News not found");
+    }
+
+    // Check for duplicate titleLine1 excluding current news
+    const existing = await NewsEvent.findOne({
+      where: {
+        titleLine1: titleLine1.trim(),
+        isDelete: false,
+        id: { [Op.ne]: id },
+      },
+    });
+
+    if (existing) {
+      return apiResponse.validationErrorWithData(
+        res,
+        "Another news item with this titleLine1 already exists"
+      );
     }
 
     news.img = img || news.img;

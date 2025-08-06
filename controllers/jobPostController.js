@@ -226,6 +226,7 @@
 // };
 
 
+const { Op } = require('sequelize');
 const JobPost = require('../models/JobPost');
 const apiResponse = require('../helper/apiResponse');
 const { validationResult } = require('express-validator');
@@ -236,12 +237,30 @@ exports.addJobPost = async (req, res) => {
     return apiResponse.ErrorResponse(res, errors.array().map(err => err.msg).join(', '));
   }
   try {
-    const { jobtitle,description,education,experience,phone,email,publishedDate } = req.body;
+    const { jobtitle, description, education, experience, phone, email, publishedDate } = req.body;
 
+    // Check for duplicate jobtitle
+    const existingJob = await JobPost.findOne({
+      where: {
+        jobtitle: jobtitle.trim(),
+        isDelete: false,
+      },
+    });
+
+    if (existingJob) {
+      return apiResponse.ErrorResponse(res, 'Job title already exists');
+    }
 
     const jobpost = await JobPost.create({ 
-      jobtitle,description,education,experience,phone,email,publishedDate, 
-      isActive: true, isDelete: false 
+      jobtitle: jobtitle.trim(),
+      description,
+      education,
+      experience,
+      phone,
+      email,
+      publishedDate,
+      isActive: true,
+      isDelete: false 
     });
     return apiResponse.successResponseWithData(res, 'job post added successfully', jobpost);
   } catch (error) {
@@ -257,16 +276,29 @@ exports.updateJobPost = async (req, res) => {
   }
   try {
     const { id } = req.params;
-    const { jobtitle,description,education,experience,email,phone,publishedDate } = req.body;
+    const { jobtitle, description, education, experience, email, phone, publishedDate } = req.body;
 
     const jobpost = await JobPost.findByPk(id);
     if (!jobpost) {
       return apiResponse.notFoundResponse(res, 'Job post not found');
     }
-     
-    jobpost.jobtitle = jobtitle;
+
+    // Check for duplicate jobtitle in other job posts
+    const existingJob = await JobPost.findOne({
+      where: {
+        jobtitle: jobtitle.trim(),
+        isDelete: false,
+        id: { [Op.ne]: id },
+      },
+    });
+
+    if (existingJob) {
+      return apiResponse.ErrorResponse(res, 'Another job post with this title already exists');
+    }
+
+    jobpost.jobtitle = jobtitle.trim();
     jobpost.description = description;
-    jobpost.education= education;
+    jobpost.education = education;
     jobpost.experience = experience;
     jobpost.phone = phone;
     jobpost.email = email;
