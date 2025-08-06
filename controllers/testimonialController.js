@@ -1,10 +1,28 @@
+const { Op } = require("sequelize");
 const Testimonial = require("../models/Testimonial");
 const apiResponse = require("../helper/apiResponse");
 
+// Add Testimonial with duplicate name check (case-sensitive)
 exports.addTestimonial = async (req, res) => {
   try {
     const { name, experience, company_Name, review, star } = req.body;
     const img = req.file ? req.file.path : null;
+
+    // Check for existing name (case-sensitive, exact match)
+    const existingTestimonial = await Testimonial.findOne({
+      where: {
+        name: name.trim(),
+        isDelete: false,
+      },
+    });
+
+    if (existingTestimonial) {
+      return apiResponse.validationErrorWithData(
+        res,
+        "Validation Error",
+        "A testimonial with this name already exists"
+      );
+    }
 
     const testimonial = await Testimonial.create({
       img,
@@ -16,6 +34,7 @@ exports.addTestimonial = async (req, res) => {
       isActive: true,
       isDelete: false,
     });
+
     return apiResponse.successResponseWithData(
       res,
       "Testimonial added successfully",
@@ -27,15 +46,33 @@ exports.addTestimonial = async (req, res) => {
   }
 };
 
+// Update Testimonial with duplicate name check (case-sensitive)
 exports.updateTestimonial = async (req, res) => {
   try {
     const { id } = req.params;
-    const { review, star,name,experience,company_Name } = req.body;
+    const { review, star, name, experience, company_Name } = req.body;
     const img = req.file ? req.file.path : null;
 
     const testimonial = await Testimonial.findByPk(id);
     if (!testimonial) {
       return apiResponse.notFoundResponse(res, "Testimonial not found");
+    }
+
+    // Check for duplicate name excluding current testimonial
+    const existing = await Testimonial.findOne({
+      where: {
+        name: name.trim(),
+        isDelete: false,
+        id: { [Op.ne]: id },
+      },
+    });
+
+    if (existing) {
+      return apiResponse.validationErrorWithData(
+        res,
+        "Validation Error",
+        "Another testimonial with this name already exists"
+      );
     }
 
     testimonial.img = img || testimonial.img;
@@ -57,24 +94,20 @@ exports.updateTestimonial = async (req, res) => {
   }
 };
 
+// Get All Testimonials
 exports.getTestimonials = async (req, res) => {
   try {
     const testimonials = await Testimonial.findAll({
       where: { isDelete: false },
     });
 
-    // Base URL for images
     const baseUrl = `${process.env.SERVER_PATH}`;
-        console.log("baseUrl....", baseUrl);
-    const testimonialsWithBaseUrl = testimonials.map((testimonial) => {
-      console.log("testimonial.img", testimonial.img);
-      return {
-        ...testimonial.toJSON(), // Convert Sequelize instance to plain object
-        img: testimonial.img
-          ? baseUrl + testimonial.img.replace(/\\/g, "/")
-          : null,
-      };
-    });
+    const testimonialsWithBaseUrl = testimonials.map((testimonial) => ({
+      ...testimonial.toJSON(),
+      img: testimonial.img
+        ? baseUrl + testimonial.img.replace(/\\/g, "/")
+        : null,
+    }));
 
     return apiResponse.successResponseWithData(
       res,
@@ -87,6 +120,7 @@ exports.getTestimonials = async (req, res) => {
   }
 };
 
+// Toggle Active Status
 exports.isActiveStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -110,6 +144,7 @@ exports.isActiveStatus = async (req, res) => {
   }
 };
 
+// Toggle Delete Status
 exports.isDeleteStatus = async (req, res) => {
   try {
     const { id } = req.params;

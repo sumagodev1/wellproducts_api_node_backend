@@ -118,10 +118,10 @@ exports.updateUploadCV = async (req, res) => {
 exports.getUploadCVs = async (req, res) => {
   try {
     const uploadCVs = await UploadCV.findAll({ where: { isDelete: false } });
-    const baseUrl = `${process.env.SERVER_PATH}`;
+
     const updatedCVs = uploadCVs.map(cv => ({
       ...cv.toJSON(),
-      cv: cv.cv ? `${baseUrl}${cv.cv.replace(/\\/g, "/")}` : null,
+      cv: cv.cv || null, // ✅ Don't double prepend
     }));
 
     return apiResponse.successResponseWithData(res, "CVs retrieved successfully", updatedCVs);
