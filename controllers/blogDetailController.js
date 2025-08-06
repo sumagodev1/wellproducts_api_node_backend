@@ -1,11 +1,33 @@
 // controllers/blogDetailController.js
 const BlogDetail = require("../models/BlogDetail");
 const apiResponse = require("../helper/apiResponse");
+const { validationResult } = require('express-validator');
+const { Op } = require("sequelize");
 
 exports.addBlogDetail = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return apiResponse.ErrorResponse(res, errors.array().map(err => err.msg).join(', '));
+  }
+
   try {
     const { title, subtitle } = req.body;
     const img = req.file ? req.file.path : null;
+
+    // Check for duplicate title
+    const existing = await BlogDetail.findOne({
+      where: {
+        title: title.trim(),
+        isDelete: false,
+      },
+    });
+
+    if (existing) {
+      return apiResponse.validationErrorWithData(
+        res,
+        'A blog detail with this title already exists'
+      );
+    }
 
     const blogDetail = await BlogDetail.create({
       img,
@@ -28,6 +50,11 @@ exports.addBlogDetail = async (req, res) => {
 };
 
 exports.updateBlogDetail = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return apiResponse.ErrorResponse(res, errors.array().map(err => err.msg).join(', '));
+  }
+
   try {
     const { id } = req.params;
     const { title, subtitle } = req.body;
@@ -36,6 +63,22 @@ exports.updateBlogDetail = async (req, res) => {
     const blogDetail = await BlogDetail.findByPk(id);
     if (!blogDetail) {
       return apiResponse.notFoundResponse(res, "Blog detail not found");
+    }
+
+    // Check for duplicate title excluding current
+    const existing = await BlogDetail.findOne({
+      where: {
+        title: title.trim(),
+        isDelete: false,
+        id: { [Op.ne]: id },
+      },
+    });
+
+    if (existing) {
+      return apiResponse.validationErrorWithData(
+        res,
+        'Another blog detail with this title already exists'
+      );
     }
 
     blogDetail.img = img || blogDetail.img;

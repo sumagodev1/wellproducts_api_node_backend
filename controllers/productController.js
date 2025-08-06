@@ -291,22 +291,18 @@ exports.updateProduct = async (req, res) => {
       return apiResponse.ErrorResponse(res, 'Another product with this title already exists');
     }
 
-    // Parse existing image paths from request body
+    // Prepare retained images from frontend
     let retainedImages = [];
-
     if (existingImages) {
-      // If existingImages is a single string, wrap it in array
-      if (Array.isArray(existingImages)) {
-        retainedImages = existingImages;
-      } else {
-        retainedImages = [existingImages];
-      }
+      retainedImages = Array.isArray(existingImages)
+        ? existingImages
+        : [existingImages];
     }
 
-
+    // Combine retained + new images
     const updatedImages = [...retainedImages, ...newImagePaths];
 
-    // Update product
+    // Save updated values
     product.img = mainImage || product.img;
     product.images = updatedImages.length > 0 ? updatedImages : product.images;
     product.title = title.trim();
@@ -324,6 +320,8 @@ exports.updateProduct = async (req, res) => {
     return apiResponse.ErrorResponse(res, 'Update product failed');
   }
 };
+
+
 
 
 // GET PRODUCTS

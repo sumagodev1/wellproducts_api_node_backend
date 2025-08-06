@@ -1,8 +1,9 @@
-
 const apiResponse = require('../helper/apiResponse');
 const { validationResult } = require('express-validator');
+const { Op } = require('sequelize');
 const Facilities = require('../models/Facilities');
 
+// ✅ Add Facilities with title required + duplicate check
 exports.addFacilities = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -10,8 +11,23 @@ exports.addFacilities = async (req, res) => {
   }
 
   try {
-    const { title, shortDesc} = req.body;
+    const { title, shortDesc } = req.body;
     const img = req.files['img'] ? req.files['img'][0].path : null;
+
+    // Check for duplicate title
+    const existing = await Facilities.findOne({
+      where: {
+        title: title.trim(),
+        isDelete: false,
+      },
+    });
+
+    if (existing) {
+      return apiResponse.validationErrorWithData(
+        res,
+        'A facility with this title already exists'
+      );
+    }
 
     const facilities = await Facilities.create({
       img,
@@ -32,6 +48,7 @@ exports.addFacilities = async (req, res) => {
   }
 };
 
+// ✅ Update Facilities with title required + duplicate check (excluding current ID)
 exports.updateFacilities = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -42,11 +59,26 @@ exports.updateFacilities = async (req, res) => {
     const { id } = req.params;
     const { title, shortDesc } = req.body;
     const img = req.files['img'] ? req.files['img'][0].path : null;
-    
 
     const facilities = await Facilities.findByPk(id);
     if (!facilities) {
       return apiResponse.notFoundResponse(res, 'Facilities not found');
+    }
+
+    // Check for duplicate title excluding current
+    const existing = await Facilities.findOne({
+      where: {
+        title: title.trim(),
+        isDelete: false,
+        id: { [Op.ne]: id },
+      },
+    });
+
+    if (existing) {
+      return apiResponse.validationErrorWithData(
+        res,
+        'Another facility with this title already exists'
+      );
     }
 
     facilities.img = img || facilities.img;
@@ -70,10 +102,9 @@ exports.getFacilities = async (req, res) => {
     const facilities = await Facilities.findAll({ where: { isDelete: false } });
 
     const baseUrl = `${process.env.SERVER_PATH}`;
-        const facilitiesWithBaseUrl = facilities.map(event => ({
+    const facilitiesWithBaseUrl = facilities.map(event => ({
       ...event.toJSON(),
       img: event.img ? baseUrl + event.img.replace(/\\/g, '/') : null,
-     
     }));
 
     return apiResponse.successResponseWithData(
@@ -96,7 +127,7 @@ exports.isActiveStatus = async (req, res) => {
       return apiResponse.notFoundResponse(res, 'Facilities not found');
     }
 
-   facilities.isActive = !facilities.isActive;
+    facilities.isActive = !facilities.isActive;
     await facilities.save();
 
     return apiResponse.successResponseWithData(
@@ -119,7 +150,7 @@ exports.isDeleteStatus = async (req, res) => {
       return apiResponse.notFoundResponse(res, 'Facilities not found');
     }
 
-   facilities.isDelete = !facilities.isDelete;
+    facilities.isDelete = !facilities.isDelete;
     await facilities.save();
 
     return apiResponse.successResponseWithData(

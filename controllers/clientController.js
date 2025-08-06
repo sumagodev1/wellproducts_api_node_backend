@@ -1,11 +1,27 @@
+const { Op } = require("sequelize");
 const Client = require("../models/Client");
 const apiResponse = require("../helper/apiResponse");
 
-// ✅ Create Client
+// ✅ Create Client with duplicate name check
 exports.addClient = async (req, res) => {
   try {
     const { clientName } = req.body;
     const img = req.file ? req.file.path : null;
+
+    // Check for existing clientName (case-sensitive)
+    const existingClient = await Client.findOne({
+      where: {
+        clientName: clientName.trim(),
+        isDelete: false,
+      },
+    });
+
+    if (existingClient) {
+      return apiResponse.validationErrorWithData(
+        res,
+        "A client with this name already exists"
+      );
+    }
 
     const client = await Client.create({
       img,
@@ -21,7 +37,7 @@ exports.addClient = async (req, res) => {
   }
 };
 
-// ✅ Update Client
+// ✅ Update Client with duplicate name check
 exports.updateClient = async (req, res) => {
   try {
     const { id } = req.params;
@@ -31,6 +47,22 @@ exports.updateClient = async (req, res) => {
     const client = await Client.findByPk(id);
     if (!client) {
       return apiResponse.notFoundResponse(res, "Client not found");
+    }
+
+    // Check for duplicate clientName excluding current client
+    const existing = await Client.findOne({
+      where: {
+        clientName: clientName.trim(),
+        isDelete: false,
+        id: { [Op.ne]: id },
+      },
+    });
+
+    if (existing) {
+      return apiResponse.validationErrorWithData(
+        res,
+        "Another client with this name already exists"
+      );
     }
 
     client.img = img || client.img;

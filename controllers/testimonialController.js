@@ -19,7 +19,7 @@ exports.addTestimonial = async (req, res) => {
     if (existingTestimonial) {
       return apiResponse.validationErrorWithData(
         res,
-        "Validation Error",
+        // "Validation Error",
         "A testimonial with this name already exists"
       );
     }
