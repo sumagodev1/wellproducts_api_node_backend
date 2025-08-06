@@ -18,7 +18,7 @@ const Product = sequelize.define('product', {
     unique:true,
   },
   shortDesc: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
 

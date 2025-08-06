@@ -12,7 +12,7 @@ const BlogDetail = sequelize.define('blogs', {
     allowNull: false,
   },
   subtitle: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
 

@@ -192,7 +192,7 @@ exports.addProduct = async (req, res) => {
       img: mainImage,
       images: imagePaths.length > 0 ? imagePaths : null,
       title: title.trim(),
-      shortDesc: shortDesc.trim(),
+      shortDesc: shortDesc,
       isActive: true,
       isDelete: false,
     });
@@ -310,7 +310,7 @@ exports.updateProduct = async (req, res) => {
     product.img = mainImage || product.img;
     product.images = updatedImages.length > 0 ? updatedImages : product.images;
     product.title = title.trim();
-    product.shortDesc = shortDesc.trim();
+    product.shortDesc = shortDesc;
 
     await product.save();
 
@@ -348,7 +348,7 @@ exports.getProduct = async (req, res) => {
       } catch {
         data.images = [];
       }
-      console.log("daata", data);
+      console.log("data", data);
 
       return data;
     });

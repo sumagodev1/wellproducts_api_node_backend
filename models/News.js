@@ -12,7 +12,7 @@ const NewsEvent = sequelize.define('dailynews', {
     allowNull: false,
   },
   titleLine2: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
 
