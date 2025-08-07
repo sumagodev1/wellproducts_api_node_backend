@@ -14,6 +14,10 @@ const ContactInformation= sequelize.define('contactinformation', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  maplink: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 
   email: {
     type: DataTypes.STRING,
