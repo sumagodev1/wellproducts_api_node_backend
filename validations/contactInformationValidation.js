@@ -10,6 +10,15 @@ const validateContactInformation = [
     .isLength({ min: 10, max: 15 })
     .withMessage('Phone number must be between 10 and 15 digits'),
 
+   body('phone1')
+    .trim()
+    .notEmpty()
+    .withMessage('Phone number is required')
+    .isNumeric()
+    .withMessage('Phone number must contain only digits')
+    .isLength({ min: 10, max: 15 })
+    .withMessage('Phone number must be between 10 and 15 digits'),
+
   body('email')
     .trim()
     .notEmpty()

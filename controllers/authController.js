@@ -102,10 +102,14 @@ const changePassword = async (req, res) => {
   }
 
   const { oldPassword, newPassword } = req.body;
-  const userId = req.user.id; // Extracted from the token
-
+  console.log("req.user",req.user);
+  
+  const userId = req.user.userId; // Extracted from the token
+  console.log("üserId",userId);
+  
   try {
     const user = await User.findByPk(userId);
+    console.log("User--------------",User);
     if (!user) {
       return apiResponse.notFoundResponse(res, 'User not found');
     }

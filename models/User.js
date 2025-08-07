@@ -11,6 +11,7 @@ const User = sequelize.define('userdb', {
     type: DataTypes.STRING,
     allowNull: false
   }
+  
 }, {
   
   timestamps: false
