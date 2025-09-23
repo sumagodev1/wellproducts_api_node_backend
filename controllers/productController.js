@@ -178,8 +178,8 @@ exports.addProduct = async (req, res) => {
     const imagePaths = extraImages.map(file => file.path);
 
     // ✅ Limit check
-    if (imagePaths.length > 10) {
-      return apiResponse.ErrorResponse(res, 'You can upload a maximum of 10 extra images');
+    if (imagePaths.length > 15) {
+      return apiResponse.ErrorResponse(res, 'You can upload a maximum of 15 extra images');
     }
 
     // Check for duplicate title
@@ -258,8 +258,8 @@ exports.updateProduct = async (req, res) => {
     let updatedImages = [...retainedImages, ...newImagePaths];
 
     // Limit check
-    if (updatedImages.length > 10) {
-      return apiResponse.ErrorResponse(res, 'You can upload a maximum of 10 extra images');
+    if (updatedImages.length > 15) {
+      return apiResponse.ErrorResponse(res, 'You can upload a maximum of 15 extra images');
     }
 
     // Save
