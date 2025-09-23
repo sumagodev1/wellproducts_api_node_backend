@@ -163,6 +163,7 @@ const apiResponse = require('../helper/apiResponse');
 const { validationResult } = require('express-validator');
 
 // ADD PRODUCT
+// ADD PRODUCT
 exports.addProduct = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -176,12 +177,14 @@ exports.addProduct = async (req, res) => {
     const extraImages = req.files['images'] || [];
     const imagePaths = extraImages.map(file => file.path);
 
+    // ✅ Limit check
+    if (imagePaths.length > 10) {
+      return apiResponse.ErrorResponse(res, 'You can upload a maximum of 10 extra images');
+    }
+
     // Check for duplicate title
     const existingProduct = await Product.findOne({
-      where: {
-        title: title.trim(),
-        isDelete: false,
-      },
+      where: { title: title.trim(), isDelete: false },
     });
 
     if (existingProduct) {
@@ -224,53 +227,59 @@ exports.updateProduct = async (req, res) => {
     const newImagePaths = newImageFiles.map(file => file.path);
 
     const product = await Product.findByPk(id);
-    if (!product) {
-      return apiResponse.notFoundResponse(res, 'Product not found');
-    }
+    if (!product) return apiResponse.notFoundResponse(res, 'Product not found');
 
     // Check for duplicate title
     const existingProduct = await Product.findOne({
-      where: {
-        title: title.trim(),
-        isDelete: false,
-        id: { [Op.ne]: id },
-      },
+      where: { title: title.trim(), isDelete: false, id: { [Op.ne]: id } },
     });
-
     if (existingProduct) {
       return apiResponse.ErrorResponse(res, 'Another product with this title already exists');
     }
 
-    // Prepare retained images from frontend
-    let retainedImages = [];
-    if (existingImages) {
-      retainedImages = Array.isArray(existingImages)
-        ? existingImages
-        : [existingImages];
+    // DB images
+    let dbImages = [];
+    if (product.images) {
+      if (Array.isArray(product.images)) dbImages = product.images;
+      else {
+        try { dbImages = JSON.parse(product.images); } catch { dbImages = []; }
+      }
     }
 
-    // Combine retained + new images
-    const updatedImages = [...retainedImages, ...newImagePaths];
+    // Retained images from frontend, fallback to DB
+    let retainedImages = [];
+    if (existingImages && existingImages.length > 0) {
+      retainedImages = Array.isArray(existingImages) ? existingImages : [existingImages];
+    } else {
+      retainedImages = dbImages;
+    }
 
-    // Save updated values
+    // Combine retained + new
+    let updatedImages = [...retainedImages, ...newImagePaths];
+
+    // Limit check
+    if (updatedImages.length > 10) {
+      return apiResponse.ErrorResponse(res, 'You can upload a maximum of 10 extra images');
+    }
+
+    // Save
     product.img = mainImage || product.img;
-    product.images = updatedImages.length > 0 ? updatedImages : product.images;
+    product.images = updatedImages.length > 0 ? updatedImages : null;
     product.title = title.trim();
     product.shortDesc = shortDesc;
 
     await product.save();
 
-    return apiResponse.successResponseWithData(
-      res,
-      'Product updated successfully',
-      product
-    );
+    return apiResponse.successResponseWithData(res, 'Product updated successfully', product);
+
   } catch (error) {
     console.error('Update product failed', error);
     return apiResponse.ErrorResponse(res, 'Update product failed');
   }
 };
 
+
+// GET PRODUCTS
 // GET PRODUCTS
 exports.getProduct = async (req, res) => {
   try {
@@ -280,21 +289,33 @@ exports.getProduct = async (req, res) => {
     const productWithBaseUrl = products.map(product => {
       const data = product.toJSON();
 
+      // ✅ Main image
       data.img = data.img ? baseUrl + data.img.replace(/\\/g, '/') : null;
 
-      // ✅ Ensure images is a real array
-      try {
+      // ✅ Sub images (always ensure array)
+      if (data.images) {
         if (typeof data.images === 'string') {
-          data.images = JSON.parse(data.images);
-          // ✅ Map image paths with baseUrl
-          data.images = data.images.map(path => baseUrl + path.replace(/\\/g, '/'))
-
+          try {
+            data.images = JSON.parse(data.images);
+          } catch {
+            data.images = [];
+          }
         }
-      } catch {
+
+        if (Array.isArray(data.images)) {
+          data.images = data.images.map(path => {
+            // Prevent double http://localhost
+            if (path.startsWith('http')) {
+              return path; // already full URL
+            }
+            return baseUrl + path.replace(/\\/g, '/');
+          });
+        }
+      } else {
         data.images = [];
       }
-      console.log("data", data);
 
+      console.log("data", data);
       return data;
     });
 
@@ -308,6 +329,7 @@ exports.getProduct = async (req, res) => {
     return apiResponse.ErrorResponse(res, 'Get product failed');
   }
 };
+
 
 // TOGGLE ACTIVE STATUS
 exports.isActiveStatus = async (req, res) => {
