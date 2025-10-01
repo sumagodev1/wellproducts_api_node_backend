@@ -378,3 +378,38 @@ exports.isDeleteStatus = async (req, res) => {
     return apiResponse.ErrorResponse(res, 'Product delete status failed');
   }
 };
+
+
+// DELETE SINGLE IMAGE FROM PRODUCT
+exports.deleteProductImage = async (req, res) => {
+  try {
+    const { id } = req.params; // Product ID
+    const { imagePath } = req.body; // Image path to delete
+
+    if (!imagePath) {
+      return apiResponse.ErrorResponse(res, 'Image path is required');
+    }
+
+    const product = await Product.findByPk(id);
+    if (!product) return apiResponse.notFoundResponse(res, 'Product not found');
+
+    let images = [];
+    if (product.images) {
+      if (Array.isArray(product.images)) images = product.images;
+      else {
+        try { images = JSON.parse(product.images); } catch { images = []; }
+      }
+    }
+
+    // Remove the image
+    const updatedImages = images.filter(img => img !== imagePath);
+
+    product.images = updatedImages.length > 0 ? updatedImages : null;
+    await product.save();
+
+    return apiResponse.successResponseWithData(res, 'Image deleted successfully', product);
+  } catch (error) {
+    console.error('Delete product image failed', error);
+    return apiResponse.ErrorResponse(res, 'Delete product image failed');
+  }
+};

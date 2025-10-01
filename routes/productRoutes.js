@@ -6,6 +6,7 @@ const {
   getProduct,
   isActiveStatus,
   isDeleteStatus,
+  deleteProductImage
 } = require('../controllers/productController');
 const authenticateToken = require('../middleware/auth');
 const {
@@ -20,5 +21,7 @@ router.put('/update-product/:id', uploadFiles, authenticateToken, validateProduc
 router.get('/get-product', getProduct);
 router.put('/isactive-product/:id', authenticateToken, validateProductId, isActiveStatus);
 router.delete('/isdelete-product/:id', authenticateToken, validateProductId, isDeleteStatus);
+router.put('/delete-product-image/:id',authenticateToken,validateProductId,deleteProductImage);
+
 
 module.exports = router;
